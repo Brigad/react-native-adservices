@@ -5,17 +5,18 @@ AdServices React Native Wrapper
 ## Installation
 
 ```sh
-npm install react-native-adservices
+yarn add @brigad/react-native-adservices
 ```
 
 ## Usage
 
 ```js
-import { multiply } from "react-native-adservices";
+import { getAttributionToken, getAttributionData } from "@brigad/react-native-adservices";
 
 // ...
 
-const result = await multiply(3, 7);
+const attributionToken = await getAttributionToken();
+const attributionData = await getAttributionData(attributionToken);
 ```
 
 ## Contributing
