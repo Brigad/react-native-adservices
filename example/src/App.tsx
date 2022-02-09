@@ -1,31 +1,47 @@
+/* eslint-disable react-native/no-inline-styles */
 import * as React from 'react';
 
-import { StyleSheet, View, Text } from 'react-native';
-import { multiply } from 'react-native-adservices';
+import { View, Text } from 'react-native';
+import {
+  getAttributionToken,
+  getAttributionData,
+  AdServicesResponseData,
+} from '@brigad/react-native-adservices';
 
 export default function App() {
-  const [result, setResult] = React.useState<number | undefined>();
+  const [token, setToken] = React.useState<string | null>(null);
+  const [attributionData, setAttributionData] =
+    React.useState<AdServicesResponseData | null>(null);
 
   React.useEffect(() => {
-    multiply(3, 7).then(setResult);
+    getAttributionToken().then(setToken);
   }, []);
 
+  React.useEffect(() => {
+    if (token) {
+      getAttributionData(token).then(setAttributionData);
+    }
+  }, [token]);
+
   return (
-    <View style={styles.container}>
-      <Text>Result: {result}</Text>
+    <View
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#EEE',
+      }}
+    >
+      <View style={{ padding: 16, borderRadius: 8, backgroundColor: 'white' }}>
+        {attributionData &&
+          Object.keys(attributionData).map((key) => (
+            <Text key={key} style={{ textAlign: 'center', paddingVertical: 4 }}>
+              {`${key}: ${
+                attributionData[key as keyof AdServicesResponseData]
+              }`}
+            </Text>
+          ))}
+      </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  box: {
-    width: 60,
-    height: 60,
-    marginVertical: 20,
-  },
-});

@@ -6,8 +6,8 @@ const LINKING_ERROR =
   '- You rebuilt the app after installing the package\n' +
   '- You are not using Expo managed workflow\n';
 
-const Adservices = NativeModules.Adservices
-  ? NativeModules.Adservices
+const RNAdServices = NativeModules.RNAdServices
+  ? NativeModules.RNAdServices
   : new Proxy(
       {},
       {
@@ -17,6 +17,24 @@ const Adservices = NativeModules.Adservices
       }
     );
 
-export function multiply(a: number, b: number): Promise<number> {
-  return Adservices.multiply(a, b);
+export type AdServicesResponseData = {
+  attribution: boolean;
+  orgId: number;
+  campaignId: number;
+  conversionType: string;
+  clickDate?: string;
+  adGroupId: number;
+  countryOrRegion: string;
+  keywordId: number;
+  adId: number;
+};
+
+export function getAttributionToken(): Promise<string | null> {
+  return RNAdServices.getAttributionToken();
+}
+
+export function getAttributionData(
+  token: string
+): Promise<AdServicesResponseData | null> {
+  return RNAdServices.getAttributionData(token);
 }

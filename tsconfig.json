@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "react-native-adservices": ["./src/index"]
+      "@brigad/react-native-adservices": ["./src/index"]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
