@@ -19,6 +19,8 @@ const attributionToken = await getAttributionToken();
 const attributionData = await getAttributionData(attributionToken);
 ```
 
+See [Apple Docs](https://developer.apple.com/documentation/ad_services/aaattribution/3697093-attributiontoken)
+
 ## Contributing
 
 See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
