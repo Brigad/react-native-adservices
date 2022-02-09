@@ -1,7 +1,11 @@
 @objc(RNAdServices)
 class RNAdServices: NSObject {
     var retries = 0
-    
+
+    @objc static func requiresMainQueueSetup() -> Bool {
+        return false
+    }
+
     @objc(getAttributionToken:withRejecter:)
     func getAttributionToken(resolve:RCTPromiseResolveBlock,reject:RCTPromiseRejectBlock) -> Void {
 #if targetEnvironment(simulator)
@@ -20,14 +24,14 @@ class RNAdServices: NSObject {
         }
 #endif
     }
-    
+
     @objc(getAttributionData:withResolver:withRejecter:)
     func getAttributionData(token: String, resolve: @escaping RCTPromiseResolveBlock,reject: @escaping RCTPromiseRejectBlock) -> Void {
         var request = URLRequest.init(url: URL(string: "https://api-adservices.apple.com/api/v1/")!)
         request.setValue("text/plain", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
         request.httpBody = token.data(using: String.Encoding.utf8)
-        
+
         let session = URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data,
                   let response = response as? HTTPURLResponse,
@@ -36,7 +40,7 @@ class RNAdServices: NSObject {
                       return
                   }
             guard (200 ... 299) ~= response.statusCode else {
-                if (response.statusCode == 404 || response.statusCode == 500 && self.retries < 5) {
+                if ((response.statusCode == 404 || response.statusCode == 500) && self.retries < 5) {
                     self.retries = self.retries + 1
                     self.getAttributionData(token: token, resolve: resolve, reject: reject)
                     return;
