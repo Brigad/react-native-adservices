@@ -35,14 +35,16 @@ class RNAdServices: NSObject {
         let session = URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data,
                   let response = response as? HTTPURLResponse,
-                  error == nil else {                                              // check for fundamental networking error
+                  error == nil else {
                       reject("", "Network error", error)
                       return
                   }
             guard (200 ... 299) ~= response.statusCode else {
-                if ((response.statusCode == 404 || response.statusCode == 500) && self.retries < 5) {
-                    self.retries = self.retries + 1
-                    self.getAttributionData(token: token, resolve: resolve, reject: reject)
+                if ((response.statusCode == 404 || response.statusCode == 500) && self.retries < 3) {
+                    self.retries += 1
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+                        self.getAttributionData(token: token, resolve: resolve, reject: reject)
+                    }
                     return;
                 }
                 self.retries = 0
